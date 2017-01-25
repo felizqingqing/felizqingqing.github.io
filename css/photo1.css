@@ -12,3 +12,7 @@ section {
 body {
     background-color: white;
 }
+.hero{
+	text-align:center
+	font-family:'Lustria', serif
+}
