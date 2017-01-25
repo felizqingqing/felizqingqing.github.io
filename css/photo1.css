@@ -10,7 +10,7 @@ section {
 	margin:100px;
 }
 body {
-    background-image:url("white");
+    background-color:"white";
 }
 .hero{
 	text-align:center;
