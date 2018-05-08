@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Q&A system</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Yuqing's Blog</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Data Scientist Work Samples</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="post.html">UX Design Work Samples</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About</a>
+            </li>
+
+
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/head.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Question Answering System on the CNN Dataset</h1>
+              <h2 class="subheading">Using Bi-Directional network and Attention Reader Models </h2>
+              <!--<span class="meta">-->
+                <!--<a href="https://github.com/allenai/allennlp">Special Thanks to Allen AI </a></span>-->
+              <p class="meta">
+              <a href="https://github.com/felizxia/Question-Answering-System-for-CNN-data">Github Link</a>
+            </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <p> Question Answering is becoming more and more popular in recent years, while statistical and neural network models have been implemented in this NLP task, advanced sequential models like LSTM and attention based network reached the highest performance. This paper reimplemented those state-of-art machine learning architectures, including Attention Sum reader model (Rudolf Kadlec and Kleindienst, 2016) and Bi-directionally Attention Flow models by (Seo et al., 2017) on CNN dataset. The goal is to compare those models' performance on different scale of the dataset and try different vector representation methods. Our baseline model - logistic regression achieved 41% accuracy, while the best deep learning approach achieved 67.2% accuracy using 175,000 training data with option sum reader model.</p>
+
+            <h2 class="section-heading">Data Pre-Processing</h2>
+
+            <p>Before we start introduce the data processing method we used for this task, we need to first introduce CNN dataset released by Google DeepMind <a href="https://cs.nyu.edu/~kcho/DMQA/">(download here)</a> first as most researchers use SQuAD dataset nowadays. This dataset focuses on the noun entity recognition. One interesting attribute of this dataset is that it anonymized the noun entities (e.g. @entity01) to force the model to learn from the context instead of the entity itself. Also, the news stories provide more sufficient background information compared with other dataset such as SQuAD, which normally contains only several sentences.</p>
+            <!--<blockquote class="blockquote">The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.</blockquote>-->
+            <!--need to change image size-->
+            <img class="img-fluid" src="img/entities.jpg" alt="">
+            <span class="caption text-muted">An example of CNN dataset</span>
+            <h4> - Truncating</h4>
+            <p> We truncated each news to a fixed length of 300 words, and each questions to 46 words long. We also filtered training data if the answer not show up in the 300 words length.</p>
+
+            <h4> - Embeddings</h4>
+            <p> For the deep learning models, we used pre-trained GloVe 100-dimension word embedding for general words and character embeddings to represent entities because entity nouns have no representations in Glove. For entities representations, we tried two different approaches and compared their performance. One is to use Word2Vec to train another 25-dimension character embedding on our train set, and take average of the character embedding to represent a word. Another approach is to use CNN to extract features during training<a href="https://arxiv.org/abs/1508.06615"> (@ Kim et al.(2016) </a>.</p>
+            <p>For CNN, each word is truncated or padded into 15 characters, and we applied 1D filters 3, 4, 5 to learn different lengths of characters. We used concatenated max pooling results to represent a word.</p>
+            <p>We kept top 20,000 words and label the rest of words as 'UNK'. Similarly, we have 'UNK entities'. Since we used character embedding for entities, for example, 'entity 1' will have character embeddings for 'e','n'.. till '1', and we average each character's embedding values to create it's final 'character embedding' values. We also tried using CNN to extract character-level features, however we give up this method because it does not work fundamentally different with original concatenate embedding method and it causes extra time to train the model.</p>
+
+            <h2 class="section-heading">Bi-Directional Attention Flow Model Details</h2>
+
+            <img class="img-fluid" src="img/bi_model.jpg" alt="">
+            <span class="caption text-muted">Original Model referenced directly from <a href="https://arxiv.org/abs/1611.01603"> Seo et al., 2017</a></span>
+            <p>After data preprocessing, the next step we used two bidirectional LSTM with input from word and character embedding layer on story and queries to create contextual embeddings from LSTM's hidden states.(We obtained H hidden states values for context words and U hidden states values for queries word.)
+              Similar to embedding layer, this contextual embedding layer is still encoding words according to their context in order to better suit for longer text representation.</p>
+            <p>We then encoded our feature vectors with the similarity matrix between the context and query as attention vectors, then we combined the contextual embedding vectors which captures the context word interactions,with this attention vectors, where context words interactions with queries have been encoded, we can have each column vector in this combine vectors have corresponding query-aware weights for each context word.</p>
+            <p>In the end, we used another two bidirectional LSTMs with inputs from our attention layer, thus we can get each context word representations conditioned on current query and on it's current story.</p>
+            <p>Finally, we need an output layer to predict which entity is the correct answer. Although it's easy to implement a softmax layer in order to predict every word probability of being the desire answer, since we only care about which options is the correct answer, thus we added a masking layer called option layer, where we only input entities' character embeddings values. Thus we ended up having only each options' probabilities in the last step. Because each entity may appear multiple times, we sum up or average each entities probabilities in every location as their final probabilities and then use L1 normalization method to normalize them as output. Thus the cost of this model is each entities probabilities with their corresponding labels.</p>
+            <p style="text-align:center;"><img src="img/summary.jpg" alt=""></p>
+
+            <span class="caption text-muted">Summary of Final Model</span>
+
+            <h2 class="section-heading">Results</h2>
+            <p>Notice that although we explained Bi-Directional Attention Flow model in a great detail, we actually received better performance by a simpler version of the Bi-Directional Attention model. The main reason is that our limited computer resources fail to train the model on all data, and the small amount of data we have now leads to over-fitting issues after few rounds of epochs.</p>
+            <p>Here, we examined the models, accompanied with different tunning parameters and embedding structures, including:</p>
+            <img class="img-fluid" src="img/result.jpg" alt="">
+            <span class="caption text-muted">Final Result of two models with different parameters</span>
+
+            <p>1) Training size of 13,700 versus training size of 89,000 versus training size of 175,000.</p>
+
+            <p>2) Word2Vec character-level embedding versus CNN character-level embedding.</p>
+
+            <p>3) Sum versus average method to calculate probabilities for each entity</p>
+
+            <p>4) LSTM model versus GRU model.</p>
+
+            We found that Attention Sum reader with 175,000 training data have the highest validation and test accuracy.</p>
+            <h2 class="section-heading">Discussion</h2>
+
+            <p>As one of the challenges of question answering system is long text understanding and captures the relationship between stories between queries, thus the main goal of this is to implement the state-of-art attention models, and consider it’s reliability in different task. </p>
+            <p>We compared time cost, model complexity cost with final model accuracy on both validation dataset and test dataset. We concluded that although Bidirectional Attention Flow may receive higher accuracy, but it requires 12 hours for one epoch on a 89,000 dataset, and thus is as not applicable as attention sum reader, where it can train one epoch using only around 40 minutes, and reached 66.9% accuracy after 34 epochs using only 89,000 training data.</p>
+            <p>We also observe that there is a slightly difference when calculating entities probabilities in news using sum method or average method. When using a small model like attention sum reader with only one layer of GRU, sum method converges quickly and part of the reason is that in CNN dataset, entities appeared frequently have higher probabilities of being selected as the correct answers. While for bidirectional attention flow model, if we use sum method it will have over-fitting problems after 5 epochs, and we found train accuracy reaches around 80% of accuracy while validation accuracy drops to 62% of accuracy. Thus we use mean attention reader method for our bidirectional attention flow model and used sum method for our simpler model</p>
+            <p>Other things you could try beyond this paper is to split each stories into sentences that centered on entities and create n words context window for every entity appeared in this story. The advantage is that research have found this method captures most information of entities contexts compare to 300 words stories representation. The disadvantage is that this would also boost training examples size dramatically.
+            </p>
+            <h4> ----END---</h4>
+
+            <p>More Code and content about this paper, please refer to <a href="https://github.com/felizxia/Question-Answering-System-for-CNN-data">Here</a></p>
+            <p>Special Thanks to @ <a href="https://github.com/allenai/allennlp">Allen AI </a> of their fantastic code for main matrix calculations functions in this paper.</span></p>
+          </div>
+        </div>
+     </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; Your Website 2018</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/clean-blog.min.js"></script>
+
+  </body>
+
+</html>
