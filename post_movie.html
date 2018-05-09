@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+        <title> Movie Twittering analysis</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Yuqing's Blog</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <!--<li class="nav-item">-->
+              <!--<a class="nav-link" href="index.html">Data Scientist Work Samples</a>-->
+            <!--</li>-->
+            <li class="nav-item">
+              <a class="nav-link" href="model.html">Modelling</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="nlp.html">NLP & Information Retrieval</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="vis.html">Visualization</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About</a>
+            </li>
+
+
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/movie-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>User intentions and behavior exploration when rating in Twitter</h1>
+              <h2 class="subheading">A Comparison of movie ratings in MovieTwittering dataset and IMDB dataset using Spark</h2>
+              <!--<span class="meta">Posted by-->
+                <!--<a href="#">Start Bootstrap</a>-->
+                <!--on August 24, 2018</span>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+              <p>The goal of this project is to analyze how twitters ratings different from IMDB’s ratings among different scales, and most importantly, trying to understand users intentions behind MovieTweeting behaviors. By doing that, we can give film companies intuitions of what type of genres are more likely to become popular in social media, why and when is the best time to do movie propagation,and etc.</p>
+              <h2 class="section-heading">Questions</h2>
+              <p>
+                There are 3 major questions that will be answered in this data report.</p>
+            <p>
+                1) What are the differences between the most popular and loved genres in IMDB and twitter platforms? Do most voted movies usually get higher ratings?</p>
+            <p>
+                2) Would twitter users more likely to share their reviews(ratings) for old movies or for most recent movies?</p>
+            <p>
+                3) Do movie exposure to Twitter boost their ticket sales? In other words, analyze the relationship between BoxOffice with total votes and rating scores.</p>
+            <h2 class="section-heading">Dataset Introduction</h2>
+              <p> IMDB : </p>
+              <p>The IMDB dataset will be scraped from OMDB API <a href="http://www.omdbapi.com/"></a>. The crawled movies will be based the IMDB_ID from online Github Repository <a href="https://github.com/sidooms/MovieTweetings"></a> The format of the return values from OMDB API will be in json format.</p>
+              <p> A brief review of the variables and records information in this dataset.</p>
+
+              <img class="img-fluid" src="img/t1.jpg" alt="">
+              <img class="img-fluid" src="img/t2.jpg" alt="">
+                <p> MovieTwitting : </p>
+              <p>The MovieTwitting dataset can be downloaded directly from <a href="https://github.com/sidooms/MovieTweetings">here</a>. There are two separate tables used in this research: movies.dat and ratings.dat. There are originally 26,044 records for movies.dat and 649,320 records for ratings.dat.</p>
+            <!--<span class="caption text-muted">To go places and do things that have never been done before – that’s what living is all about.</span>-->
+              <h2 class="section-heading"> Analysis and Visualization</h2>
+              <p>Exploration1 : User preferences to Genre - BasicDataExploration:</p>
+                <p>1) Popular genres in IMDB and twitter are similar. Top 3 genres are in the range of Comedy, Drama and Action.</p>
+              <img class="img-fluid" src="img/movie_f1.jpg" alt="">
+              <p>2) Most highly rated genres in IMDB are Film, Documentary, Biography, Animation and War. While most highly rated genres in Twitter are Western, Short, Documentary, Biography and Film.</p>
+              <img class="img-fluid" src="img/movie_f3.jpg" alt="">
+              <img class="img-fluid" src="img/movie_f4.jpg" alt="">
+              <p> - Interesting findings:</p>
+              <p>1) Documentary and Biography are both being most mentioned and rated high for both IMDB and twitter. Twitter users prefer to share biography movies and IMDB users voted a lot for Documentary.</p>
+              <img class="img-fluid" src="img/movie_f6.jpg" alt="">
+              <p>From this result, we will advise Documentary and Biography movie directors to do movie propagation in twitter before they release.</p>
+              <p>2) Movie genres that being mentioned more usually not being rated too high.</p>
+              <img class="img-fluid" src="img/movie_f5.jpg" alt="">
+              <p>As we can see from figure 5, we can see Action,Comedy, Drama, Horror in IMDB dataset have large votes audiences, but they receive relatively low rating score. Here, in order to plot ratings and votes on a same y scale, I use log function on IMDB total votes to see a zoom in version.</p>
+              <p>Exploration 2 : Twitter Ratings time series analysis</p>
+              <p>In this exploration section, we want to explore the fact whether twitter users are more likely to share their reviews(ratings) for old movies or for most recent movies( Movie release time>1). </p>
+                <p>As it turns out, twitter users rating behaviors have time effect.</p>
+                <img class="img-fluid" src="img/movie_f7.jpg" alt="">
+              <p>If we search deeper to the genre pattern of twitter rating, we can find that for action movies, their Total Votes have very clear boundaries. Although most people votes for movies in 10 days to 20 days after they release, some people love to share their rating to their preference for classic action movies.</p>
+                <p>However if we look at Figure 9, biography movies rating time, we cannot see a very obvious patter in here, which means biography movies don’t pursue for time effect. Interesting, we can see lots of biography have ratings before they release. So they must put their trailer on internet before they released and twitter users love to rate them!</p>
+
+                <img class="img-fluid" src="img/movie_f8.jpg" alt="">
+              <p>So knowing that twitter users rate biography trailers, I was wondering whether this preview version is the reason that make biography get higher score/reputation.</p>
+              <p>Thus I compared the movies with trailers and movies with trailers and wanna see their average score differences. Turns out, from Table 7, biography movies companies who publish their trailers in advance and receive twitter users’ rating will gain much more higher rating.</p>
+                <p>From that, we can reasonably guess biography movies reputation have close relationship with their media exposure.</p>
+                <img class="img-fluid" src="img/movie_t7.jpg" alt="">
+              <p>Beside of that, we also curious about how twitter users change their ‘Genre taste’ across time.</p>
+                <p>From figure 7 we can find some interesting insights. Notice the horror movies are receiving higher and higher ratings through year. And also the same for Action, Comedy and Mystery. While Adventure movie decrease their ratings quite a lot through time. The most steady high performance candidates are Animation and Documentary.</p>
+              <img class="img-fluid" src="img/movie_f10.jpg" alt="">
+              <p>Exploration 3: Movies Exposure in twitter relationship with their BoxOffice performance</p>
+              <p>Through visualization, it was good to know that twitter votes amounts can have an influence on ticket sales, especially for below genres.</p>
+                <img class="img-fluid" src="img/movie_f13.jpg" alt="">
+
+            <p>More Code and content about this project, please refer to <a href="https://github.com/felizxia/Movie_Twittering_User_Behaviors-">Here</a></p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; Your Website 2018</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/clean-blog.min.js"></script>
+
+  </body>
+
+</html>
